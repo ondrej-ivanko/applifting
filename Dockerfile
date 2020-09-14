@@ -19,5 +19,5 @@ RUN apt-get update && \
     apt-get clean
 
 
-EXPOSE 8000
+EXPOSE 8080
 

@@ -62,3 +62,15 @@ $ ./manage.py runserver {you can add port number after, by default its 8000}
 ```
 
 Than visit http://127.0.0.1:8000 in your browser
+
+If running as dockerized app:
+
+if running on Windows. Use docker-machine and find out your docker-machine ip, which should replace the HOST value 
+in settings of django app
+
+then run:
+```sh
+$ docker-compose up -d --build
+$ docker-compose exec web ./get_offers_token
+```
+

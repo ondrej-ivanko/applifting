@@ -1,6 +1,6 @@
 from catalog.models import Product, Offer
 from catalog import serializers
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, mixins
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -9,7 +9,9 @@ class ProductViewSet(viewsets.ModelViewSet):
     lookup_field = "guid"
 
 
-class PriceHistoryVisualizationViewSet(generics.GenericAPIView):
+class PriceHistoryVisualizationViewSet(
+    mixins.RetrieveModelMixin, viewsets.GenericViewSet
+):
     queryset = Offer.objects.all()
     serializer_class = serializers.OfferSerializer
     lookup_field = "guid"

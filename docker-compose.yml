@@ -3,7 +3,7 @@ version: '3'
 services:
   web:
     build: .
-    command: bash -c "python manage.py makemigrations && python manage.py migrate && ./get_offers.token.sh && python manage.py runserver 0.0.0.0:8080"
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8080"
     container_name: applifting_webapp
     volumes:
       - .:/applifting_webapp
@@ -18,7 +18,7 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=applifting
+      - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=catalog
     ports: 
       - "5432:5432"
