@@ -4,7 +4,7 @@ omit = *migrations*, *admin.py, *apps.py, *management*, *tests*, *applifting/wsg
 disable_warnings = True
 
 [html]
-directory = coverage_html_report
+directory = /coverage_html_report
 
 [report]
 precision = 2

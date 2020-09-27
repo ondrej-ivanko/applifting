@@ -1,7 +1,6 @@
 import factory
 import string
 import uuid
-from factory import SubFactory
 from catalog.models import Offer, Product, PriceStamp
 
 
@@ -23,8 +22,8 @@ class ProductFactory(factory.django.DjangoModelFactory):
         """
         num_items = int(kwargs.pop("num_items", 0))
         obj = super().create(**kwargs)
-        # create_batch method performs INSERT query for every created object, so making orders with
-        # big amount of order items may take some time.
+        # create_batch method performs INSERT query for every created object, so creating product with
+        # big amount of offers may take some time.
         OfferFactory.create_batch(size=num_items, product=obj)
         return obj
 
@@ -58,4 +57,4 @@ class OfferFactory(factory.django.DjangoModelFactory):
         max_value=999999,
     )
     items_in_stock = factory.Faker("pyint", min_value=1, max_value=20)
-    product = SubFactory(ProductFactory)
+    product = factory.SubFactory(ProductFactory)

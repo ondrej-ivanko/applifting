@@ -28,15 +28,11 @@ class PriceHistoryVisualizationViewSet(
         """
         Finds pricestamps between provided dates and return their rise/fall % difference.
         """
-        pricestamps_selection = instance.pricestamps.all()
-        price_differential = self._get_price_difference(
-            pricestamps_selection.first().price, pricestamps_selection.last().price
-        )
         prices_start_date, prices_end_date = (
             validated_data["price_initial_date"],
             validated_data["price_final_date"],
         )
-        pricestamps_selection = pricestamps_selection.filter(
+        pricestamps_selection = instance.pricestamps.filter(
             timestamp__range=[prices_start_date, prices_end_date]
         )
         price_differential = self._get_price_difference(
@@ -56,9 +52,8 @@ class PriceHistoryVisualizationViewSet(
             pricestamps_selection,
             price_differential,
         ) = self._get_pricestamps_and_differential(instance, serializer.validated_data)
-        serializer = serializers.PriceStampSerializer(
-            pricestamps_selection, many=True, context={"guid": instance.guid},
-        )
+        serializer = serializers.PriceStampSerializer(pricestamps_selection, many=True,)
+
         # adding 'price changes in given time period' and 'related offer id' as last items
         # of response, so it's not duplicated in results.
         serializer_data = serializer.data + [

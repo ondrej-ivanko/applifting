@@ -3,10 +3,8 @@ Runs iterative task to regularly check for new offers or price updates added to
 'Offers Service' for given product. Creates new offers to related Product obj accordingly. 
 Creates snapshot/pricestamp of latest price of Offer obj.
 """
-import os
 import logging
 import requests
-from builtins import breakpoint
 from django.conf import settings
 from django.db import transaction
 from celery.schedules import crontab
@@ -17,8 +15,8 @@ logger = logging.getLogger(__name__)
 
 
 def update_product_with_offers(product, offers):
-    with transaction.atomic():
-        for offer in offers:
+    for offer in offers:
+        with transaction.atomic():
             obj, created = Offer.objects.update_or_create(
                 offers_id=offer["id"],
                 defaults={
@@ -40,10 +38,9 @@ def get_offer_pricestamps_for_all_products():
         return
     offers_access_token = check_and_get_offers_token()
     for product in products:
-        breakpoint()
         try:
             response = requests.get(
-                f"{os.getenv('BASE_URL')}/products/{product.guid}/offers",
+                f"{settings.BASE_URL}/products/{product.guid}/offers",
                 headers={"Bearer": offers_access_token},
             )
         except Exception as exc:

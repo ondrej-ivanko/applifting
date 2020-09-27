@@ -23,10 +23,12 @@ class MockResponse:
 class TestProduct:
     @pytest.fixture(autouse=True)
     def get_item_guid(self):
-        products = ProductFactory.create_batch(
-            name="example_name", description="description", size=20
-        )
-        self.product_guid = products[0].guid
+        # products = ProductFactory.create_batch(
+        #     name="example_name", description="description", size=20
+        # )
+        for idx in range(20):
+            ProductFactory(name=f"example_name{idx}", description=f"description{idx}")
+        self.product_guid = Product.objects.first().guid
         yield self.product_guid
 
     @pytest.fixture(autouse=True)
@@ -43,11 +45,11 @@ class TestProduct:
         )
         response = self.client.post(
             "/products",
-            data={"name": "some name", "description": "fsdfafdfsf"},
+            data={"name": "example_name", "description": "description"},
             format="json",
         )
         assert response.status_code == 201
-        assert isinstance(Product.objects.get(name="some name"), Product)
+        assert isinstance(Product.objects.get(name="example_name"), Product)
         m.assert_called_once()
 
     def test_list_products(self):
@@ -55,12 +57,12 @@ class TestProduct:
         response = self.client.get("/products")
         assert response.status_code == 200
         assert len(response.json()["results"]) == count
-        for item in response.json()["results"]:
+        for idx, item in enumerate(response.json()["results"]):
             for k, v in item.items():
                 if k == "name":
-                    assert v == "example_name"
+                    assert v == f"example_name{idx}"
                 if k == "description":
-                    assert v == "description"
+                    assert v == f"description{idx}"
 
     def test_get_product(self):
         response = self.client.get(
@@ -88,8 +90,10 @@ class TestProduct:
             data={"name": "AVIA", "description": "another_description"},
             content_type="application/json",
         )
+        patched_product = Product.objects.get(guid=self.product_guid)
         assert response.status_code == 200
-        assert Product.objects.get(guid=self.product_guid).name == "AVIA"
+        assert patched_product.name == "AVIA"
+        assert patched_product.description == "another_description"
 
 
 @pytest.mark.django_db
