@@ -2,7 +2,7 @@ import factory
 import string
 import uuid
 from factory import SubFactory
-from catalog.models import Offer, Product
+from catalog.models import Offer, Product, PriceStamp
 
 
 class ProductFactory(factory.django.DjangoModelFactory):
@@ -29,11 +29,26 @@ class ProductFactory(factory.django.DjangoModelFactory):
         return obj
 
 
+class PriceStampFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = PriceStamp
+
+    price = factory.Faker(
+        "pydecimal",
+        right_digits=2,
+        left_digits=6,
+        positive=True,
+        min_value=1,
+        max_value=999999,
+    )
+
+
 class OfferFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Offer
 
     guid = factory.LazyFunction(lambda: uuid.uuid4())
+    offers_id = factory.Faker("pyint", min_value=1, max_value=99999999)
     price = factory.Faker(
         "pydecimal",
         right_digits=2,

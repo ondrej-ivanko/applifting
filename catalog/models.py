@@ -10,6 +10,7 @@ class Product(models.Model):
 
 class Offer(models.Model):
     guid = models.UUIDField(unique=True, editable=False, default=uuid.uuid4)
+    offers_id = models.PositiveIntegerField(unique=True)
     price = models.DecimalField(decimal_places=2, max_digits=8)
     items_in_stock = models.PositiveIntegerField()
     product = models.ForeignKey(
@@ -24,3 +25,5 @@ class PriceStamp(models.Model):
         Offer, on_delete=models.CASCADE, related_name="pricestamps", to_field="guid"
     )
 
+    class Meta:
+        ordering = ["timestamp"]

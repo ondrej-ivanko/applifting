@@ -1,13 +1,22 @@
+# necessaries and dependencies
+celery==4.4.7
 Django==3.1
-djangorestframework==3.11.1
-python-dotenv>=0.9.1
-requests==2.24.0
-psycopg2-binary==2.8.5
-django-filter==2.3.0
 django-crispy-forms==1.9.2
+django-filter==2.3.0
+djangorestframework==3.11.1
+psycopg2-binary==2.8.5
+python-dotenv==0.14.0
+redis==3.5.3
+requests==2.24.0
 
-#testing
+# testing
 black==19.10b0
 pylint==2.5.3
 pylint-django==2.3.0
 pylint-plugin-utils==0.6
+pytest-django==3.10.0
+pytest-xdist==2.1.0 # tests run in concurrency: invoke as $ pytest -n <num of processes>
+pytest-mock==3.3.1
+pytest-cov==2.10.1
+factory-boy==3.0.1
+pytest-factoryboy=2.0.3

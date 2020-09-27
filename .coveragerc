@@ -1,0 +1,13 @@
+[run]
+source = catalog, applifting
+omit = *migrations*, *admin.py, *apps.py, *management*, *tests*, *applifting/wsgi*, *applifting/asgi*, *new_venv*, *venv*,
+disable_warnings = True
+
+[html]
+directory = coverage_html_report
+
+[report]
+precision = 2
+show_missing = True
+skip_empty = True
+sort = Cover

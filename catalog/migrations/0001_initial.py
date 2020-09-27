@@ -9,40 +9,82 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Offer',
+            name="Offer",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('guid', models.UUIDField(default=uuid.uuid4, editable=False, unique=True)),
-                ('price', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('items_in_stock', models.PositiveIntegerField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "guid",
+                    models.UUIDField(default=uuid.uuid4, editable=False, unique=True),
+                ),
+                ("price", models.DecimalField(decimal_places=2, max_digits=8)),
+                ("items_in_stock", models.PositiveIntegerField()),
             ],
         ),
         migrations.CreateModel(
-            name='Product',
+            name="Product",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('guid', models.UUIDField(default=uuid.uuid4, editable=False, unique=True)),
-                ('name', models.CharField(max_length=255)),
-                ('description', models.TextField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "guid",
+                    models.UUIDField(default=uuid.uuid4, editable=False, unique=True),
+                ),
+                ("name", models.CharField(max_length=255)),
+                ("description", models.TextField()),
             ],
         ),
         migrations.CreateModel(
-            name='PriceStamp',
+            name="PriceStamp",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('price', models.DecimalField(decimal_places=2, max_digits=8)),
-                ('offer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='pricestamps', to='catalog.offer', to_field='guid')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("timestamp", models.DateTimeField(auto_now_add=True)),
+                ("price", models.DecimalField(decimal_places=2, max_digits=8)),
+                (
+                    "offer",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="pricestamps",
+                        to="catalog.offer",
+                        to_field="guid",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='offer',
-            name='product',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='offers', to='catalog.product', to_field='guid'),
+            model_name="offer",
+            name="product",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="offers",
+                to="catalog.product",
+                to_field="guid",
+            ),
         ),
     ]
