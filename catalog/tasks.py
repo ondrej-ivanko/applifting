@@ -7,7 +7,7 @@ import logging
 import requests
 from django.conf import settings
 from django.db import transaction
-from celery.schedules import crontab
+from django.utils import timezone
 from catalog.models import Product, Offer, PriceStamp
 from applifting.utils import check_and_get_offers_token
 
@@ -27,8 +27,23 @@ def update_product_with_offers(product, offers):
             )
             if created:
                 logger.info("We have received a new Offer for Product: %s.", product.id)
-            # creating latest price snapshot
-            PriceStamp.objects.create(price=offer["price"], offer=obj)
+
+                # creating latest price snapshot
+                PriceStamp.objects.create(price=obj.price, offer=obj)
+                logger.info("Initial price stamp for new offer created.")
+            else:
+                latest_pricestamp = obj.pricestamps.last()
+                # time_elapsed variable works like a pricestamp creation sanity check.
+                # I want to limit the amount of pricestamps created, when the price effectively
+                # does not change. It is unnecessary. The DB therefore does not get overwhelmed
+                # with massive amount of timestamps every minute the task is run.
+                time_elapsed = latest_pricestamp.timestamp - timezone.now()
+                if (
+                    latest_pricestamp.price != obj.price
+                    or time_elapsed.seconds >= 86400
+                ):
+                    PriceStamp.objects.create(price=obj.price, offer=obj)
+                    logger.info("Update-like price stamp created.")
 
 
 def get_offer_pricestamps_for_all_products():
