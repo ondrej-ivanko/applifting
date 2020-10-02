@@ -28,7 +28,7 @@ BASE_URL = os.getenv("BASE_URL")
 assert BASE_URL, logger.error("BASE_URL environment variable is not set.")
 
 
-DEBUG = os.getenv("DEBUG", "True")
+DEBUG = os.getenv("DEBUG", "False")
 
 ALLOWED_HOSTS = ["*"]
 
@@ -145,6 +145,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "/static/"
 
 REST_FRAMEWORK = {
