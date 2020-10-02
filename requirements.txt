@@ -14,7 +14,7 @@ gunicorn==20.0.4
 # for heroku postgresql addon
 dj-database-url==0.5.0
 # for heroku redis addon
-django-redis-cache-2.1.3
+django-redis-cache==2.1.3
 
 # testing
 black==19.10b0
@@ -26,4 +26,4 @@ pytest-xdist==2.1.0 # tests run in concurrency: invoke as $ pytest -n <num of pr
 pytest-mock==3.3.1
 pytest-cov==2.10.1
 factory-boy==3.0.1
-pytest-factoryboy=2.0.3
+pytest-factoryboy==2.0.3
