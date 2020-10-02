@@ -1,7 +1,7 @@
 """
 Runs iterative task to regularly check for new offers or price updates added to 
 'Offers Service' for given product. Creates new offers to related Product obj accordingly. 
-Creates snapshot/pricestamp of latest price of Offer obj.
+Creates snapshot/pricestamp of latest price of Offer obj if necesary.
 """
 import logging
 import requests
@@ -47,6 +47,7 @@ def update_product_with_offers(product, offers):
 
 
 def get_offer_pricestamps_for_all_products():
+    """Checks if new offers are available for every product and updates it with offers accordingly"""
     products = Product.objects.all()
     if not products:
         logger.info("No products to get offers for.")
