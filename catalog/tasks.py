@@ -68,7 +68,7 @@ def get_offer_pricestamps_for_all_products():
                 logger.warning(
                     "The offers of product guid: %s cannot be retrieved, because of %s",
                     product.guid,
-                    response.reason_phrase,
+                    response.reason,
                 )
             else:
                 returned_offers = response.json()

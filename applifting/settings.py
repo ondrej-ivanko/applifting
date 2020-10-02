@@ -17,12 +17,11 @@ logger = logging.getLogger(__name__)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
-localhost = bool(os.getenv("HOST") == "127.0.0.1")
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
-if localhost:
-    load_dotenv(verbose=True, dotenv_path=os.path.join(BASE_DIR, ".env_local_dev"))
+load_dotenv(verbose=True, dotenv_path=os.path.join(BASE_DIR, ".env_local_dev"))
+
+LOCALHOST = bool(os.getenv("HOST") == "127.0.0.1")
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
@@ -105,10 +104,10 @@ SQLITE = {
 PRODUCTION_DB = dj_database_url.config(ssl_require=True)
 
 WIN = sys.platform.startswith("win")
-DATABASES["default"] = PRODUCTION_DB if not localhost else POSTGRES if WIN else SQLITE
+DATABASES["default"] = PRODUCTION_DB if not LOCALHOST else POSTGRES if WIN else SQLITE
 
 # using default locmemcache for local developement and redis cache in production
-if not localhost:
+if not LOCALHOST:
     CACHES = {
         "default": {
             "BACKEND": "redis_cache.RedisCache",
@@ -158,8 +157,8 @@ REST_FRAMEWORK = {
 }
 
 # CELERY STUFF
-BROKER_URL = os.getenv("REDIS_URL")
-CELERY_RESULT_BACKEND = os.getenv("REDIS_URL")
+BROKER_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
+CELERY_RESULT_BACKEND = os.getenv("REDIS_URL", "redis://localhost:6379")
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
