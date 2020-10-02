@@ -17,10 +17,12 @@ logger = logging.getLogger(__name__)
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
+localhost = bool(os.getenv("HOST") == "127.0.0.1")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
-load_dotenv(verbose=True, dotenv_path=os.path.join(BASE_DIR, ".env_local_dev"))
+if localhost:
+    load_dotenv(verbose=True, dotenv_path=os.path.join(BASE_DIR, ".env_local_dev"))
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
@@ -101,7 +103,6 @@ SQLITE = {
 
 # reading variables of 'heroku postgres addon' to populate DB settings dictionary
 PRODUCTION_DB = dj_database_url.config(ssl_require=True)
-localhost = bool(os.getenv("HOST") == "127.0.0.1")
 
 WIN = sys.platform.startswith("win")
 DATABASES["default"] = PRODUCTION_DB if not localhost else POSTGRES if WIN else SQLITE
