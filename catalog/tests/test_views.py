@@ -1,8 +1,8 @@
 import pytest
-from builtins import breakpoint
 from faker import Faker
 from django.urls import reverse
 from rest_framework.serializers import ValidationError
+from rest_framework.response import Response
 from catalog.models import Product, PriceStamp
 from catalog.exceptions import CustomValidationError
 from catalog.tests.factories import ProductFactory, OfferFactory, PriceStampFactory
@@ -12,20 +12,21 @@ faker = Faker(locale="en-US")
 
 
 class MockResponse:
-    def __init__(self, status_code):
+    def __init__(self, status_code, no_id=False):
         self.status_code = status_code
+        self.no_id = no_id
 
     def raise_for_status(self):
         pass
+
+    def json(self):
+        return {"id": 123} if not self.no_id else {"different_key": 123}
 
 
 @pytest.mark.django_db
 class TestProduct:
     @pytest.fixture(autouse=True)
     def get_item_guid(self):
-        # products = ProductFactory.create_batch(
-        #     name="example_name", description="description", size=20
-        # )
         for idx in range(20):
             ProductFactory(name=f"example_name{idx}", description=f"description{idx}")
         self.product_guid = Product.objects.first().guid
@@ -36,10 +37,9 @@ class TestProduct:
         self.client = client
         yield self.client
 
+
     def test_create_new_product(self, mocker):
-        m = mocker.MagicMock()
-        m(
-            "catalog.serializers.requests.post",
+        m = mocker.patch("requests.post",
             return_value=MockResponse(200),
             autospec=True,
         )
@@ -51,6 +51,22 @@ class TestProduct:
         assert response.status_code == 201
         assert isinstance(Product.objects.get(name="example_name"), Product)
         m.assert_called_once()
+
+
+    def test_create_new_product_does_not_return_id_in_response(self, mocker):
+        m = mocker.patch("requests.post",
+            return_value=MockResponse(201, no_id=True),
+            autospec=True,
+        )
+        response = self.client.post(
+            "/products",
+            data={"name": "example_name", "description": "description"},
+            format="json",
+        )
+        assert response.status_code == 400
+        assert pytest.raises(CustomValidationError)
+        assert response.json()[0]["code"] == "UNEXPECTED_RESPONSE"
+
 
     def test_list_products(self):
         count = Product.objects.all().count()
@@ -64,12 +80,14 @@ class TestProduct:
                 if k == "description":
                     assert v == f"description{idx}"
 
+
     def test_get_product(self):
         response = self.client.get(
             reverse("products-detail", args=(self.product_guid,))
         )
         assert response.status_code == 200
         assert response.json()["guid"] == str(self.product_guid,)
+
 
     def test_delete_product(self):
         response = self.client.delete(
@@ -82,6 +100,7 @@ class TestProduct:
             Product.DoesNotExist, Product.objects.get, guid=self.product_guid
         )
         assert Product.objects.filter(guid=self.product_guid).exists() == False
+
 
     def test_patch_product(self):
         url = reverse("products-detail", args=(self.product_guid,))

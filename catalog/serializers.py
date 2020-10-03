@@ -29,9 +29,9 @@ class ProductSerializer(serializers.ModelSerializer):
             headers={"Bearer": offers_access_token},
         )
         response.raise_for_status()
-        if not response.json()["id"]:
+        if not response.json().get("id"):
             raise CustomValidationError(
-                "Failed to register new product", "PRODUCT_REGISTRATION_FAILED"
+                "We have received unexpected response form Offers service", "UNEXPECTED_RESPONSE"
             )
 
     def create(self, validated_data):
