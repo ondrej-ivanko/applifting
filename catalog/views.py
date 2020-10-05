@@ -35,9 +35,12 @@ class PriceHistoryVisualizationViewSet(
         pricestamps_selection = instance.pricestamps.filter(
             timestamp__range=[prices_start_date, prices_end_date]
         )
-        price_differential = self._get_price_difference(
-            pricestamps_selection.first().price, pricestamps_selection.last().price
-        )
+        # default 0 value in case we get empty qs from pricestamps_selection
+        price_differential = "0"
+        if pricestamps_selection:
+            price_differential = self._get_price_difference(
+                pricestamps_selection.first().price, pricestamps_selection.last().price
+            )
         return pricestamps_selection, price_differential
 
     def retrieve(self, request, *args, **kwargs):

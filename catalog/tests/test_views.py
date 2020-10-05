@@ -37,11 +37,9 @@ class TestProduct:
         self.client = client
         yield self.client
 
-
     def test_create_new_product(self, mocker):
-        m = mocker.patch("requests.post",
-            return_value=MockResponse(200),
-            autospec=True,
+        m = mocker.patch(
+            "requests.post", return_value=MockResponse(200), autospec=True,
         )
         response = self.client.post(
             "/products",
@@ -52,11 +50,9 @@ class TestProduct:
         assert isinstance(Product.objects.get(name="example_name"), Product)
         m.assert_called_once()
 
-
     def test_create_new_product_does_not_return_id_in_response(self, mocker):
-        m = mocker.patch("requests.post",
-            return_value=MockResponse(201, no_id=True),
-            autospec=True,
+        m = mocker.patch(
+            "requests.post", return_value=MockResponse(201, no_id=True), autospec=True,
         )
         response = self.client.post(
             "/products",
@@ -66,7 +62,6 @@ class TestProduct:
         assert response.status_code == 400
         assert pytest.raises(CustomValidationError)
         assert response.json()[0]["code"] == "UNEXPECTED_RESPONSE"
-
 
     def test_list_products(self):
         count = Product.objects.all().count()
@@ -80,14 +75,12 @@ class TestProduct:
                 if k == "description":
                     assert v == f"description{idx}"
 
-
     def test_get_product(self):
         response = self.client.get(
             reverse("products-detail", args=(self.product_guid,))
         )
         assert response.status_code == 200
         assert response.json()["guid"] == str(self.product_guid,)
-
 
     def test_delete_product(self):
         response = self.client.delete(
@@ -100,7 +93,6 @@ class TestProduct:
             Product.DoesNotExist, Product.objects.get, guid=self.product_guid
         )
         assert Product.objects.filter(guid=self.product_guid).exists() == False
-
 
     def test_patch_product(self):
         url = reverse("products-detail", args=(self.product_guid,))
