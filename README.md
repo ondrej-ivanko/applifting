@@ -92,4 +92,4 @@ $ docker container run -p 8000:8080 web python manage.py runserver
 Application is deployed on Heroku at: `https://applifting-web.herokuapp.com`
 
 The FE is bare browsable API.
-Exposed endpoints are `/products`, `/products/<:str>`, `/price-history/<:str>?price_initial_date=<ISODATETIME>&price_final_date=<ISODATETIME>`
+Exposed endpoints are `/products`, `/products/<product_guid:str>`, `/price-history/<offer_guid:str>?price_initial_date=<ISODATETIME>&price_final_date=<ISODATETIME>`
