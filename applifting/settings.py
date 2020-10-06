@@ -21,7 +21,8 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 load_dotenv(verbose=True, dotenv_path=os.path.join(BASE_DIR, ".env_local_dev"))
 
-LOCALHOST = bool(os.getenv("HOST") == "127.0.0.1")
+# when running localhost from VM or Docker-machine, IP can be different so check if IP in list
+LOCALHOST = bool(os.getenv("HOST") in ["127.0.0.1"])
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
@@ -38,6 +39,7 @@ APPEND_SLASH = False
 # Application definition
 
 INSTALLED_APPS = [
+    "whitenoise.runserver_nostatic",
     "catalog",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -52,13 +54,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "applifting.urls"
