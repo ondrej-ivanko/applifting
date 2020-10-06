@@ -35,7 +35,7 @@ $ django-admin startapp {name of the app}
 ```
 - First commands start new Django project and second one new app (avoid calling your application an `app` - It confuses Django on some occasions depending on IDEs. You might have to rewrite some files.)
 
-You should create .env file in root folder or your project which acts as storage for env variables that is easy to maintain and should be gitignored. It can hold `secrets` like password to your DB and django project SECRET KEY and other secrets. In production your should use Key/Management system. I have used python-dotenv library in settings.py only for ilustration how it works.
+You should create .env file in root folder or your project which acts as storage for env variables that is easy to maintain and should be gitignored. It can hold `secrets` like password to your DB and django project SECRET KEY and other secrets. In production your should use Key/Management system or if hosted on PaaS servers than set it up in settings off your platform and application. I'm using python-dotenv library for local developement.
 
 
 # Running local server and migrations
@@ -56,21 +56,36 @@ You can run ```./manage.py check``` that everything in your project is OK
 
 Prior to running Django server, you need to run ```./get_offers_token.sh``` script, which will fetch access_token to communicate with 'Offers' microservice and save it to you local .env file.
 
+### running on local server
 For running the local server and checking your Django is ok run:
 ```sh
 $ ./manage.py runserver {you can add port number after, by default its 8000}
 ```
+Make sure that DEBUG variable in settings is set to `True` as otherwise django will try to serve the staticfiles instead
+of whitenoise and it will result in 500.
 
 Than visit http://127.0.0.1:8000 in your browser
 
+Running behing Gunicorn:
+```sh
+$ gunicorn applifting.wsgi --bind {you can add host_ip:port number after, by default its 0.0.0.0:<random_port_no>}
+```
+
+### running in Docker containers
 If running as dockerized app:
 
-if running on Windows. Use docker-machine and find out your docker-machine ip, which should replace the HOST value 
-in settings of django app
+If running on Windows use docker-machine and find out your docker-machine ip, which should replace the HOST value 
+in settings of django app. Also add it to list in LOCALHOST.
+You can also use Docker for Windows if you have the necessary Win version.
 
-then run:
+for docker compose run:
 ```sh
-$ docker-compose up -d --build
+$ docker-compose up -d --build . # . represent directory of Dockerfile
 $ docker-compose exec web ./get_offers_token
+```
+to run as standalone docker container:
+```sh
+$ docker image build .
+$ docker container run -p 8000:8080 web python manage.py runserver
 ```
 
