@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
-load_dotenv(verbose=True, dotenv_path=os.path.join(BASE_DIR, ".env_local_dev"))
+load_dotenv(verbose=True, override=True, dotenv_path=os.path.join(BASE_DIR, ".env_local_dev"))
 
 # when running localhost from VM or Docker-machine, IP can be different so check if IP in list
 LOCALHOST = bool(os.getenv("HOST") in ["127.0.0.1"])
@@ -87,8 +87,6 @@ WSGI_APPLICATION = "applifting.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {}
-
 POSTGRES = {
     "ENGINE": "django.db.backends.postgresql_psycopg2",
     "NAME": os.getenv("NAME"),
@@ -98,16 +96,11 @@ POSTGRES = {
     "PORT": os.getenv("PORT", "5432"),
 }
 
-SQLITE = {
-    "ENGINE": "django.db.backends.sqlite3",
-    "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
-}
-
 # reading variables of 'heroku postgres addon' to populate DB settings dictionary
 PRODUCTION_DB = dj_database_url.config(ssl_require=True)
 
-WIN = sys.platform.startswith("win")
-DATABASES["default"] = PRODUCTION_DB if not LOCALHOST else POSTGRES if WIN else SQLITE
+DATABASES = {}
+DATABASES["default"] = PRODUCTION_DB if not LOCALHOST else POSTGRES
 
 # using default locmemcache for local developement and redis cache in production
 if not LOCALHOST:

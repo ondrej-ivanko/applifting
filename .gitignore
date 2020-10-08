@@ -226,7 +226,7 @@ dmypy.json
 # pytype static type analyzer
 
 ### VisualStudioCode ###
-.vscode/*
+*vscode*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
