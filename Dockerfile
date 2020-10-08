@@ -18,5 +18,4 @@ RUN apt-get update && \
     apt-get autoremove -y && \
     apt-get clean
 
-
 EXPOSE 8080
