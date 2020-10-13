@@ -16,6 +16,7 @@ RUN apt-get update && \
     chmod +x  get_offers_token.sh && \
     apt-get purge -y git && \
     apt-get autoremove -y && \
-    apt-get clean
+    apt-get clean &&\
+    ./get_offers_token.sh
 
 EXPOSE 8080
