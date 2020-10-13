@@ -80,13 +80,13 @@ You can also use Docker for Windows if you have the necessary Win version.
 
 for docker compose run:
 ```sh
-$ docker-compose up -d --build . # . represent directory of Dockerfile
+$ docker-compose up -d --build
 $ docker-compose exec web ./get_offers_token
 ```
 to run as standalone docker container:
 ```sh
 $ docker image build .
-$ docker container run -p 8000:8080 web python manage.py runserver
+$ docker container run -p 8000:8080 <image name> python manage.py runserver
 ```
 
 Application is deployed on Heroku at: `https://applifting-web.herokuapp.com`

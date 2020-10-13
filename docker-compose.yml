@@ -6,11 +6,15 @@ services:
     command: sh -c "gunicorn applifting.wsgi --bind 0.0.0.0:8080"
     container_name: web
     volumes:
-      - .:/web
+      - project:/applifting
+      - static:/applifting/staticfiles
     ports:
       - "8080:8080"
     depends_on: 
       - "db"
+      - "redis-server"
+    env_file: 
+      - .env_local_dev
 
   db:
     image: postgres:12.4-alpine
@@ -23,5 +27,15 @@ services:
     ports: 
       - "5432:5432"
 
+  redis-server:
+    image: redis:6.0.8
+    volumes:
+      - redis_data:/data
+    ports: 
+      - "6379:6379"
+
 volumes:
   postgres_data:
+  project:
+  redis_data:
+  static:

@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 load_dotenv(verbose=True, override=True, dotenv_path=os.path.join(BASE_DIR, ".env_local_dev"))
 
 # when running localhost from VM or Docker-machine, IP can be different so check if IP in list
-LOCALHOST = bool(os.getenv("HOST") in ["127.0.0.1"])
+LOCALHOST = os.path.exists(os.path.join(BASE_DIR, ".env_local_dev"))
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
