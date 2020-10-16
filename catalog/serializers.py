@@ -56,11 +56,17 @@ class DateTimeStampSerializer(serializers.Serializer):
                 "price_initial_date must be older than price_final_date",
                 "DATES_CONFLICT",
             )
-        elif final > timezone.now():
+        if final > timezone.now():
             raise CustomValidationError(
                 "Dates must be less than curren date and time", "DATES_SET_IN_FUTURE"
             )
         return attrs
+        
+    def create(self, validated_data):
+        ...
+    
+    def update(self, instance, validated_data):
+        ...
 
 
 class PriceStampSerializer(serializers.ModelSerializer):
