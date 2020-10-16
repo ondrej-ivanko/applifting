@@ -1,6 +1,6 @@
-import pytest
 import random
 from copy import deepcopy
+import pytest
 from catalog.models import PriceStamp, Product
 from catalog.tests.factories import ProductFactory
 from catalog.tasks import get_offer_pricestamps_for_all_products
@@ -25,15 +25,10 @@ class MockResponse:
 class TestCeleryTasks:
 
     def test_get_offer_pricestamps_for_all_products_no_product(self):
-        result = get_offer_pricestamps_for_all_products()
-        assert result == None
+        assert not get_offer_pricestamps_for_all_products()
 
-    
     def test_get_offer_pricestamps_for_all_products_exception(self, mocker):
-        m = mocker.patch("requests.get",
-            side_effect=Exception,
-            autospec=True,
-        )
+        mocker.patch("requests.get", side_effect=Exception, autospec=True)
         product = ProductFactory()
         get_offer_pricestamps_for_all_products()
         assert pytest.raises(Exception)
@@ -41,31 +36,20 @@ class TestCeleryTasks:
 
 
     def test_get_offer_pricestamps_for_all_products_bad_response(self, mocker):
-        m = mocker.patch("requests.get",
-            return_value=MockResponse(404),
-            autospec=True,
-        )
+        mocker.patch("requests.get", return_value=MockResponse(404), autospec=True)
         product = ProductFactory()
         get_offer_pricestamps_for_all_products()
         assert product.offers.all().count() == 0
 
 
     def test_get_offer_pricestamps_for_all_products_no_offers(self, mocker):
-        m = mocker.patch("requests.get",
-            return_value=MockResponse(200, no_offers=True),
-            autospec=True,
-        )
+        mocker.patch("requests.get", return_value=MockResponse(200, no_offers=True), autospec=True)
         product = ProductFactory()
-        result = get_offer_pricestamps_for_all_products()
-        assert result == None
+        assert not get_offer_pricestamps_for_all_products()
         assert product.offers.all().count() == 0
-        
 
     def test_get_offer_pricestamps_for_all_products_offer_created(self, mocker):
-        m = mocker.patch("requests.get",
-            return_value=MockResponse(200),
-            autospec=True,
-        )
+        mocker.patch("requests.get", return_value=MockResponse(200), autospec=True)
         product = ProductFactory()
         get_offer_pricestamps_for_all_products()
         assert product.offers.all().count() == 5
