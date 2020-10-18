@@ -1,9 +1,10 @@
 from collections import OrderedDict
-from django.utils import timezone
-from catalog.models import Product, Offer, PriceStamp
-from catalog import serializers
+
 from rest_framework import viewsets, mixins
 from rest_framework.response import Response
+
+from catalog.models import Product, Offer
+from catalog import serializers
 
 
 class ProductViewSet(viewsets.ModelViewSet):

@@ -1,8 +1,9 @@
 import pytest
 from faker import Faker
 from django.urls import reverse
+
 from rest_framework.serializers import ValidationError
-from rest_framework.response import Response
+
 from catalog.models import Product, PriceStamp
 from catalog.exceptions import CustomValidationError
 from catalog.tests.factories import ProductFactory, OfferFactory, PriceStampFactory
