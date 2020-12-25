@@ -19,7 +19,6 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 load_dotenv(verbose=True, override=True, dotenv_path=os.path.join(BASE_DIR, ".env_local_dev"))
 
-# when running localhost from VM or Docker-machine, IP can be different so check if IP in list
 LOCALHOST = os.path.exists(os.path.join(BASE_DIR, ".env_local_dev"))
 
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -28,7 +27,7 @@ BASE_URL = os.getenv("BASE_URL")
 assert BASE_URL, logger.error("BASE_URL environment variable is not set.")
 
 
-DEBUG = os.getenv("DEBUG", "False")
+DEBUG = True if LOCALHOST else False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -96,8 +95,7 @@ POSTGRES = {
 # reading variables of 'heroku postgres addon' to populate DB settings dictionary
 PRODUCTION_DB = dj_database_url.config(ssl_require=True)
 
-DATABASES = {}
-DATABASES["default"] = PRODUCTION_DB if not LOCALHOST else POSTGRES
+DATABASES = {"default": PRODUCTION_DB if not LOCALHOST else POSTGRES}
 
 # using default locmemcache for local developement and redis cache in production
 if not LOCALHOST:
@@ -115,9 +113,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 

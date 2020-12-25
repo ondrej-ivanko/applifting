@@ -126,6 +126,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+Pipfile
+Pipfile.lock
 
 # Spyder project settings
 .spyderproject
@@ -236,5 +238,8 @@ dmypy.json
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 .history
+
+# PyCharm
+.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/django,python,git,visualstudiocode

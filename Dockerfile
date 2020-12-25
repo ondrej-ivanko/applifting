@@ -15,14 +15,14 @@ RUN apt-get update && \
     apt-get install -y git && \
     pip install --upgrade pip && \
     pip install -r requirements.txt && \
-    chmod +x  bash_get_token.sh && \
-    apt-get purge -y git && \
+    rm -rf /var/cache/apt/lists/*
+
+RUN chmod u+x  bash_get_token.sh django-entrypoint.sh && \
     apt-get autoremove -y && \
-    apt-get clean && \
     ./bash_get_token.sh
 
 EXPOSE 8080
 
-ENTRYPOINT [ "gunicorn" ]
+ENTRYPOINT ["/bin/bash"]
 
-CMD [ "applifting.wsgi", "--bind", "0.0.0.0:8080", "--workers", "5" ]
+CMD [ "django-entrypoint.sh" ]

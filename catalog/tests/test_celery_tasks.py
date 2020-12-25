@@ -1,7 +1,7 @@
 import random
 from copy import deepcopy
 import pytest
-from catalog.models import PriceStamp, Product
+from catalog.models import PriceStamp
 from catalog.tests.factories import ProductFactory
 from catalog.tasks import get_offer_pricestamps_for_all_products
 

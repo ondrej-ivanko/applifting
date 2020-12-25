@@ -10,10 +10,13 @@ services:
     ports:
       - "8080:8080"
     depends_on: 
-      - "db"
-      - "redis-server"
-    env_file: 
-      - .env_local_dev
+      db:
+        condition: service_healthy
+      redis-server:
+        condition: service_started
+    environment:
+      - HOST=db
+      - PORT=5432
 
   db:
     image: postgres:12.4-alpine
@@ -25,6 +28,11 @@ services:
       - POSTGRES_DB=catalog
     ports: 
       - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis-server:
     image: redis:6.0.8

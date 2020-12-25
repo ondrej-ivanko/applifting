@@ -1,0 +1,13 @@
+# IDE
+.idea/
+.vscode/
+
+# deployment
+Procfile
+
+# virtual env
+Pipfile
+Pipfile.lock
+
+# versioning
+.git/
